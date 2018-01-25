@@ -1,0 +1,8 @@
+:host {
+	background-color:black;
+}
+footer {
+	flex: none;
+	padding-top: 10px;
+	border-top: 1px solid #3f3f3f;
+}

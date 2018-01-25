@@ -1,0 +1,82 @@
+<div class="row">
+	<div class="col-md-12">
+		<h1>Welcome {{currentUser.firstName}}</h1>
+		<p><a routerLink="/goes-nowhere">This link is broken</a></p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h2>Your friends</h2>
+		<p *ngIf="!currentUsersFriends.length">You have no friends!</p>
+		<table *ngIf="currentUsersFriends.length">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Username</th>
+					<th>User Privileges</th>
+					<th>Member Since</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let user of currentUsersFriends">
+					<td><a [routerLink]="['/dashboard/users', user._id]">
+						{{user.firstName}} {{user.lastName}}</a>
+					</td>
+					<td>{{user.username}}</td>
+					<td *ngIf="user.isAdmin; else basicUser">Admin</td>
+					<ng-template #basicUser>
+						<td>Basic User</td>
+					</ng-template>
+					<td>{{user.createdAt | date}}</td>
+					<td>
+						<button (click)="unfriendUser()">Unfriend</button>
+						<button (click)="blockUser()">Block</button>
+						<button (click)="reportUser()">Report</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h2>Other Users</h2>
+		<table>
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Username</th>
+					<th>User Privileges</th>
+					<th>Member Since</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let user of otherUsers">
+					<td>
+						<a [routerLink]="['/dashboard/users', user._id]">
+							{{user.firstName}} {{user.lastName}}
+						</a>
+					</td>
+					<td>{{user.username}}</td>
+					<td *ngIf="user.isAdmin; else basicUser">Admin</td>
+					<ng-template #basicUser>
+						<td>Basic User</td>
+					</ng-template>
+					<td>{{user.createdAt | date}}</td>
+					<td *ngIf="!(user.sentRequest || user.receivedRequest)">
+						<button (click)="placeFriendRequest(user._id)">Add Friend</button>
+					</td>
+					<td *ngIf="user.sentRequest">
+						<button (click)="cancelRequest(user.requestId)">Cancel request</button>
+					</td>
+					<td *ngIf="user.receivedRequest">
+						<button (click)="acceptRequest(user.requestId)">Accept Friend Request</button>
+						<button (click)="rejectRequest(user.requestId)">Reject</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

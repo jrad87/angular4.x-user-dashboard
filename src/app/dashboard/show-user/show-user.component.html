@@ -1,0 +1,26 @@
+<div class="row">
+	<div class="col-md-12">
+		<h1>{{user.firstName}} {{user.lastName}}</h1>
+		<app-show-profile
+			[user]="user"></app-show-profile>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<app-post-message 
+			[messageTo]="user._id"
+			(messagePosted)="showNewMessage($event)">
+		</app-post-message>
+	</div>
+</div>
+<div class="row" *ngFor="let message of user.messages">
+	<div class="col-md-9 ml-auto">
+		<app-show-message
+			[message]="message"
+			(messageDeleted)="removeDeletedMessage($event)">
+		</app-show-message>
+	</div>
+	<!--div class="col-md-3">
+		<app-message-actions [message]="message"></app-message-actions>
+	</div-->
+</div>

@@ -1,1 +1,46 @@
 /* You can add global styles to this file, and also import other style files */
+html {
+	height: 100%;
+}
+body, app-root {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	background-color: #333333;
+}
+
+
+
+h1, h2, h3, h4, h5, h6, p, label, legend { font-family: 'Nunito', sans-serif; }
+h1, h2, h3, h4, h5, h6 { font-weight: bold; }
+
+a, a:hover, body, app-root {
+	color: #068fff;
+}
+a { 
+	text-decoration: underline;
+}
+.hero {display: inline-block;}
+.hero a{text-decoration: none;}
+a:hover {text-shadow: 0px 0px 10px #068fff;}
+
+button {
+	border: 3px solid #3f3f3f;
+	border-radius: 10px;
+	background-color: #222222;
+	color: #068fff;
+	cursor: pointer;
+}
+input[type="text"], input[type="password"], textarea {
+	background-color: black;
+	color: white;
+	border: none;
+	border-radius: 10px;
+	padding: 5px 10px;
+}
+input:focus, textarea:focus {
+	outline: none;
+}
+#app {
+	flex: 1 0 auto;
+}
