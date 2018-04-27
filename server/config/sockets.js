@@ -20,7 +20,6 @@ function findSocket(userId){
     let one = Object.keys(socketUserLookup).filter(key => {
 	return (socketUserLookup[key] === userId)
     });
-    
     return one[0];
 }
 
@@ -38,7 +37,7 @@ module.exports = function(io){
 		  }
 		*/
 		if(!queue.peek()){
-		    console.log('stoppeing timer due to bug');
+		    console.log('stopping timer due to bug');
 		    clearInterval(timer);
 		    console.log('timer2', timer);
 		    return;
@@ -68,7 +67,6 @@ module.exports = function(io){
 		.catch(console.log);
 	});
 	socket.on('triggerTimeout', () => {
-	    //console.log('timeoutOccurred');
 	    socket.emit('timeoutOccurred', 'ignored');
 	});
 	socket.on('userLogout', () => {

@@ -25,7 +25,7 @@ import { AuthService } from 'app/services/auth.service';
 					</div>
 					<div *ngIf="isEditing">
 						<form>
-							<textarea></textarea>
+							<textarea placeholder="{{message.text}}"></textarea>
 						</form>
 					</div>
 					<div>

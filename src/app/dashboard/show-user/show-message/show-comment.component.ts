@@ -20,7 +20,7 @@ import { CommentService } from 'app/services/comment.service';
 		</div>
 		<div class="comment-container"
 			*ngIf="isEditing">
-
+                        <textarea placeholder="{{comment.text}}"></textarea>
 			<button (click)="toggleEditing()">Cancel</button>
 			<button (click)="saveEdit">Save</button>
 		</div>
