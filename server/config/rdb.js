@@ -1,3 +1,6 @@
+// TODO add this later when running on a linux vm
+// The redis db will contain the queue for tracking
+// signed in users and timing them out
 const redis = require('redis');
 const client = redis.createClient();
 
