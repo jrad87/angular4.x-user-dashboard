@@ -13,16 +13,25 @@ import { CommentService } from 'app/services/comment.service';
 			<p>{{comment.text}}</p>
 			<button 
 				*ngIf="hasEditPrivileges"
-				(click)="toggleEditing()">Edit</button>
+				(click)="toggleEditing()"
+			>Edit</button>
 			<button 
 				*ngIf="hasDeletePrivileges"
-				(click)="deleteComment()">Delete</button>
+				(click)="deleteComment()"
+			>Delete</button>
 		</div>
 		<div class="comment-container"
-			*ngIf="isEditing">
-                        <textarea placeholder="{{comment.text}}"></textarea>
+			*ngIf="isEditing"
+		>
+			<ul *ngIf="errors">
+				<li *ngFor="let error of errors">{{error}}</li>
+			</ul>
+			<textarea 
+				placeholder="{{comment.text}}"
+				[(ngModel)]="editCommentBuffer"
+			></textarea>
 			<button (click)="toggleEditing()">Cancel</button>
-			<button (click)="saveEdit">Save</button>
+			<button (click)="editComment()">Save</button>
 		</div>
 	`,
 	styles: [`
@@ -40,12 +49,18 @@ import { CommentService } from 'app/services/comment.service';
 export class ShowCommentComponent implements OnInit {
 	@Input() comment: Comment = new Comment();
 	@Input() messageTo: string;
-	@Output() commentRemoved = new EventEmitter();
-	@Output() saveEdit = new EventEmitter(); 
-
+	@Output() messageChanged = new EventEmitter();
+	
 	hasDeletePrivileges: boolean = false;
 	hasEditPrivileges: boolean = false;
 	isEditing: boolean = false;
+
+	editCommentBuffer: string = "";
+	errors: string[] = [];
+
+	displayErrors(errors: string[]) {
+		this.errors = errors;
+	}
 
 	toggleEditing() {
 		this.isEditing = !this.isEditing;
@@ -54,9 +69,18 @@ export class ShowCommentComponent implements OnInit {
 	deleteComment() {
 		this._comments.deleteComment(this.comment)
 			.then(updatedMessage => {
-				this.commentRemoved.emit(updatedMessage);
+				this.messageChanged.emit(updatedMessage);
 			})
-			.catch(console.log)
+			.catch(console.log);
+	}
+
+	editComment() {
+		//console.log(this.editCommentBuffer);
+		this._comments.editComment(this.comment, this.editCommentBuffer)
+			.then(updatedMessage => {
+				this.messageChanged.emit(updatedMessage);
+			})
+			.catch(errorResponse => this.displayErrors(errorResponse.json()));
 	}
 
 	constructor(

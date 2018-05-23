@@ -18,21 +18,16 @@ export class ShowProfileComponent implements OnChanges{
 		private _profile: ProfileService
 	){}
 	OnInit(){
-		console.log(this.user);
 		this._profile.show(this.user.profile)
 			.then(profile => {
 				this.profile = profile
-				
 			})
 			.catch(console.log);
 	}
 	ngOnChanges(changes: SimpleChanges){
-		console.log(changes);
 		if(changes.user && changes.user.currentValue && !changes.user.firstChange ){
-
 			this._profile.show(this.user.profile)
 				.then(profile => {
-					console.log(profile);
 					this.profile = profile;
 				})
 				.catch(console.log);

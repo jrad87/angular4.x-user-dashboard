@@ -19,5 +19,10 @@ module.exports = {
 			})
 			.then(newMessage => response.json(newMessage))
 			.catch(console.log);
+	},
+	updateComment(req, res) {
+		Comment.updateComment(req.params.id, req.body.text)
+			.then(newMessage => res.json(newMessage))
+			.catch(errorHandler.bind(res));
 	}
 }

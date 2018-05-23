@@ -31,6 +31,7 @@ module.exports = function(app){
 
 		.post('/api/comments/:m_id', comments.postComment)
 		.delete('/api/comments/:id', comments.deleteComment)
+		.put('/api/comments/:id', comments.updateComment)
 			
 		.get('/api/profiles/:id', profiles.showUserProfile)
 

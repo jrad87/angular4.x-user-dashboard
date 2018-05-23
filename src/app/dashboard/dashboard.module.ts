@@ -25,6 +25,8 @@ import { PostCommentComponent } from './show-user/show-message/post-comment.comp
 import { ShowCommentComponent } from './show-user/show-message/show-comment.component';
 import { MessageActionsComponent } from './show-user/show-message/message-actions.component';
 
+import { AutofocusDirective } from '../directives/autofocus.directive'
+
 @NgModule({
 	imports: [
 		CommonModule,
@@ -42,7 +44,8 @@ import { MessageActionsComponent } from './show-user/show-message/message-action
 		ShowMessageComponent,
 		PostCommentComponent,
 		ShowCommentComponent,
-		MessageActionsComponent
+		MessageActionsComponent,
+		AutofocusDirective
 	],
 	providers: [
 		AuthService,

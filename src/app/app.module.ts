@@ -13,6 +13,8 @@ import { ErrorsModule } from './errors/errors.module';
 import { AppComponent } from './app.component';
 import { FooterComponent } from './footer/footer.component';
 
+import { AutofocusDirective } from './directives/autofocus.directive';
+
 @NgModule({
 	declarations: [
 		AppComponent,

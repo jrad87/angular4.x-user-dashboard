@@ -33,12 +33,13 @@ import { AuthService } from 'app/services/auth.service';
 							*ngFor="let comment of message.comments"
 							[comment]="comment"
 							[messageTo]="message.messageTo"
-							(commentRemoved)="updateMessage($event)">
+							(messageChanged)="updateMessage($event)">
 						</app-show-comment>
 					</div>
 					<app-post-comment 
 						*ngIf="isCommenting"
 						(commentPosted)="addComment($event)"
+						(commentCanceled)="toggleCommenting()"
 						[commentOn]="message._id">
 					</app-post-comment>
 				</div>

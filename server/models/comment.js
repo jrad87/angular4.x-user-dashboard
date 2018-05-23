@@ -34,4 +34,19 @@ commentSchema.methods.removeFromMessage = function(){
 		.then(message => message.populateMessage());
 }
 
+commentSchema.statics.updateComment = function(id, text){
+	return this.model('Comment')
+		.findById(id)
+		.then(comment => {
+			console.log(comment);
+			comment.text = text;
+			return comment.save()
+		})
+		.then(updatedComment => {
+			return this.model('Message').findById(updatedComment.commentOn)
+		})
+		.then(message => message.populateMessage());
+	
+}
+
 module.exports = mongoose.model('Comment', commentSchema);

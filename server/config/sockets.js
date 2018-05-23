@@ -5,7 +5,7 @@ const Timeouts = require('mongoose').model('Timeouts');
 let socketUserLookup = {};
 
 let timer;
-const TIMEOUT_MILLIS = 500 * 2 * 1000
+const TIMEOUT_MILLIS = 100 * 2 * 1000
 
 
 function findSocket(userId) {
@@ -17,13 +17,11 @@ function findSocket(userId) {
 
 module.exports = function (io) {
 	let processQueue = function (socket) {
-		console.log('processing');
+		//console.log('processing');
 		Timeouts.Queue()
 			.then(queue => {
 				if (!queue.peek()) {
 					clearInterval(timer);
-					console.log('stopping timer due to bug');
-					console.log('timer2', timer);
 					return;
 				}
 				let timeDiff = Date.now() - Date.parse(queue.peek().loginTime);
@@ -36,8 +34,6 @@ module.exports = function (io) {
 	}
 
 	io.on('connection', (socket) => {
-		console.log('user connected sockets config');
-
 		socket.on('userConnected', (userId) => {
 			Timeouts.Queue()
 				.then(queue => console.log(queue))
@@ -45,9 +41,7 @@ module.exports = function (io) {
 					socketUserLookup[socket.id] = userId;
 					if (!timer || !timer._onTimeout) {
 						timer = setInterval(processQueue, 2000);
-						console.log('timer', timer);
 					}
-					//console.log(socketUserLookup);
 				})
 				.catch(console.log);
 		});

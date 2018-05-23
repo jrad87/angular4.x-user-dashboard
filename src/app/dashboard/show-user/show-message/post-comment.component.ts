@@ -18,7 +18,12 @@ import { CommentService } from 'app/services/comment.service';
 				<li *ngFor="let error of errors">{{error}}</li>
 			</ul>
 			<form>
-				<textarea name="text" [(ngModel)]="commentBuffer.text"></textarea>
+				<textarea 
+					name="text" 
+					[(ngModel)]="commentBuffer.text" 
+					el-autofocus
+					(blur)="commentBuffer.text === '' ? cancelComment() : postComment()"
+				></textarea>
 				<button (click)="postComment()" type="button">Add comment</button>
 			</form>
 		</div>
@@ -35,6 +40,8 @@ import { CommentService } from 'app/services/comment.service';
 export class PostCommentComponent implements OnInit {
 	@Input() commentOn: string;
 	@Output() commentPosted = new EventEmitter();
+	@Output() commentFailed = new EventEmitter();
+	@Output() commentCanceled = new EventEmitter();
 	errors: string[];
 	commentBuffer: Comment = new Comment();
 	
@@ -51,13 +58,27 @@ export class PostCommentComponent implements OnInit {
 			})
 			.catch(errorResponse => {
 				this.errors = errorResponse.json();		
+				this.commentFailed.emit();
 			})
 	}
 	
+	cancelComment() {
+		this.commentCanceled.emit();
+	}
+
+
+
 	resetBuffers() {
 		this.commentBuffer = new Comment();
 		this.commentBuffer.commentOn = this.commentOn;
 		this.commentBuffer.commentFrom = this._auth.userID();
+	}
+
+	doStuff(e){
+		console.log('stuff')
+		console.log(e);
+		e.preventDefault();
+		console.log(e);
 	}
 
 	ngOnInit() {

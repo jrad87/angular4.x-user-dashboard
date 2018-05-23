@@ -24,5 +24,11 @@ export class CommentService {
 			.map(data => data.json())
 			.toPromise();
 	}
+
+	editComment(comment: Comment, text: string): Promise<Message>{
+		return this._http.put(`/api/comments/${comment._id}`, {text: text})
+			.map(data => data.json())
+			.toPromise()
+	}
 	
 }

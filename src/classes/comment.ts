@@ -5,4 +5,7 @@ export class Comment {
 	text: string;
 	commentFrom: User | string;
 	commentOn: Message | string;
+	constructor() {
+		this.text = '';
+	}
 }
