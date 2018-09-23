@@ -1,11 +1,19 @@
-const Timeouts = require('mongoose').model('Timeouts');
+const timeoutHandlers = require('./socket-handlers/timeouts')
+
+module.exports = function(io) {
+	io.on('connection', (socket) => {
+		timeoutHandlers(socket, io);
+	})
+}
 
 // socketUserLookup stores pairs in the form { socket.id: userId }
 // It must be edited on each login and logout
+/*
 let socketUserLookup = {};
 
 let timer;
-const TIMEOUT_MILLIS = 100 * 2 * 1000
+const LOG_TIMEOUT_QUEUE_INTERVAL = 2000
+const TIMEOUT_MILLIS = 10 * LOG_TIMEOUT_QUEUE_INTERVAL
 
 
 function findSocket(userId) {
@@ -17,7 +25,6 @@ function findSocket(userId) {
 
 module.exports = function (io) {
 	let processQueue = function (socket) {
-		//console.log('processing');
 		Timeouts.Queue()
 			.then(queue => {
 				if (!queue.peek()) {
@@ -27,37 +34,33 @@ module.exports = function (io) {
 				let timeDiff = Date.now() - Date.parse(queue.peek().loginTime);
 				console.log('timeDiff', timeDiff);
 				if (timeDiff > TIMEOUT_MILLIS) {
-					io.sockets.to(findSocket(queue.peek().user._id.toString())).emit('timeoutOccurred');
+					io.sockets.to(findSocket(queue.peek().user._id.toString())).emit('timeoutOccurred', 'stuff');
 					//findSocket(queue.peek().user.toString());
 				}
 			});
 	}
 
 	io.on('connection', (socket) => {
+
 		socket.on('userConnected', (userId) => {
 			Timeouts.Queue()
 				.then(queue => console.log(queue))
 				.then(() => {
 					socketUserLookup[socket.id] = userId;
 					if (!timer || !timer._onTimeout) {
-						timer = setInterval(processQueue, 2000);
+						timer = setInterval(processQueue, LOG_TIMEOUT_QUEUE_INTERVAL);
 					}
 				})
 				.catch(console.log);
 		});
 
 		socket.on('triggerTimeout', () => {
+			console.log('Time out occurred')
 			socket.emit('timeoutOccurred', 'ignored');
 		});
 
 		socket.on('userLogout', () => {
 			Timeouts.Queue()
-				.then(queue => {
-					//console.log(queue.users)
-					return queue;
-					//return queue.removeUserOnLogout(socketUserLookup[socket.id]);
-					//return queue.clearAll();
-				})
 				.then(queue => {
 					delete socketUserLookup[socket.id];
 					if (!queue.users || !queue.users.length) {
@@ -69,5 +72,22 @@ module.exports = function (io) {
 				})
 				.catch(console.log);
 		});
+
+		socket.on('timeoutAll', () => {
+			Timeouts.Queue()
+				.then(queue => {
+					Object.keys(socketUserLookup)
+						.forEach(socketId => {
+							console.log(socketId)
+							let socket = socketUserLookup[socketId]
+							io.sockets.to(socketId).emit('timeoutOccurred')
+						})
+					return queue;
+				})
+				.then(queue => queue._clearAll())
+				.then(() => User.updateMany({isActive: true}, {isActive: false}))
+				.catch(console.log)
+		})
 	});
 }
+*/

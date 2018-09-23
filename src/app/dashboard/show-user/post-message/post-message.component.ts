@@ -1,11 +1,12 @@
-import { 
-	Component, 
-	OnInit, 
-	OnChanges, 
-	SimpleChanges, 
-	Input, 
-	Output, 
-	EventEmitter } from '@angular/core';
+import {
+	Component,
+	OnInit,
+	OnChanges,
+	SimpleChanges,
+	Input,
+	Output,
+	EventEmitter
+} from '@angular/core';
 import { Message } from 'classes/message';
 import { MessageService } from 'app/services/message.service';
 import { AuthService } from 'app/services/auth.service';
@@ -26,7 +27,7 @@ import { UserService } from 'app/services/user.service';
 		</fieldset>
 	`
 })
-export class PostMessageComponent implements OnInit, OnChanges{
+export class PostMessageComponent implements OnInit, OnChanges {
 	@Input() messageTo: string;
 	messageBuffer: Message = new Message();
 	errors: string[] = [];
@@ -36,9 +37,9 @@ export class PostMessageComponent implements OnInit, OnChanges{
 		private _auth: AuthService,
 		private _users: UserService,
 		private _messages: MessageService
-	){}
+	) {}
 
-	resetMessageBuffer(){
+	resetMessageBuffer() {
 		this.messageBuffer = new Message();
 		this.messageBuffer.messageFrom = this._auth.userID();
 		this.messageBuffer.messageTo = this.messageTo;
@@ -50,25 +51,25 @@ export class PostMessageComponent implements OnInit, OnChanges{
 			.then( message => {
 				return this._users.sendMessage(this.messageTo, message)
 			})
-			.then( createdMessage => {	
+			.then( createdMessage => {
 				this.resetMessageBuffer();
 				this.messagePosted.emit(createdMessage);
 			})
 			.catch(response => this.displayErrors(response.json()))
 	}
 
-	displayErrors(errors){
+	displayErrors(errors) {
 		this.errors = errors;
 	}
 
-	ngOnInit(){
+	ngOnInit() {
 		this.messageBuffer.messageFrom = this._auth.userID();
 	}
 
-	ngOnChanges(changes: SimpleChanges){
+	ngOnChanges(changes: SimpleChanges) {
 		// this.messageTo is assigned by an async process in the parent component,
 		// therefore it must be attached to this.messageBuffer in the ngOnChanges hook
-		if(changes.messageTo && changes.messageTo.currentValue) {
+		if (changes.messageTo && changes.messageTo.currentValue) {
 			this.messageBuffer.messageTo = changes.messageTo.currentValue;
 		}
 	}

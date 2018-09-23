@@ -5,15 +5,15 @@ import { ErrorsComponent } from './errors.component';
 import { PageNotFoundComponent } from './404.component';
 
 const errorsRoutes: Routes = [
-	{	
-		path: 'error', 
+	{
+		path: 'error',
 		component: ErrorsComponent,
 		children: [
-			{path: '', component: PageNotFoundComponent},	
+			{path: '', component: PageNotFoundComponent},
 		]
 	},
-	
-	//{path: '**', redirectTo: '/error'}
+
+	// {path: '**', redirectTo: '/error'}
 ]
 
 @NgModule({

@@ -1,13 +1,17 @@
 <div class="row">
 	<div class="col-md-12">
 		<h1>{{user.firstName}} {{user.lastName}}</h1>
+		<div class="col-md-12" *ngIf="!isFriend">
+			<p>You are not friends with {{user.firstName}}!</p>
+			<p>You will need to add her as a friend to send her messages!</p>
+		</div>
 		<app-show-profile
 			[user]="user"></app-show-profile>
 	</div>
 </div>
 <div class="row">
 	<div class="col-md-12">
-		<app-post-message 
+		<app-post-message *ngIf="isFriend" 
 			[messageTo]="user._id"
 			(messagePosted)="showNewMessage($event)">
 		</app-post-message>

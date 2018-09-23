@@ -5,7 +5,7 @@ import { NotificationService } from 'services/notification.service';
 
 @Component({
 	selector: 'app-dashboard-nav',
-	template:`
+	template: `
 		<nav>
 			<div class="container">
 				<div class="row">
@@ -30,7 +30,7 @@ export class DashboardNavComponent implements OnInit, OnDestroy {
 		private _auth: AuthService,
 		private _router: Router,
 		private _notify: NotificationService
-	){}
+	) {}
 
 	logout() {
 		this._auth.logout()
@@ -42,7 +42,8 @@ export class DashboardNavComponent implements OnInit, OnDestroy {
 	}
 
 	testTimeout() {
-		//console.log('Button clicked');
+		this._notify.timeoutAll()
+		// console.log('Button clicked');
 	}
 
 	ngOnInit() {

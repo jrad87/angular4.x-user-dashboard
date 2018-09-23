@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 @Component({
 	selector: 'app-footer',
-	template:`
+	template: `
 		<footer>
 			<div class="container">
 				<p>User Dashboard 2017 jrad87 &copy;</p>

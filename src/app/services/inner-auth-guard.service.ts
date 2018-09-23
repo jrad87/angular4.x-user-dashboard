@@ -10,7 +10,7 @@ export class InnerAuthGuard implements CanActivate {
 	constructor(
 		private _auth: AuthService,
 		private _router: Router
-	){}
+	) {}
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
 		return this.checkAuth();
 	}
@@ -21,4 +21,4 @@ export class InnerAuthGuard implements CanActivate {
 		this._router.navigate(['/home']);
 		return false;
 	}
-} 
+}

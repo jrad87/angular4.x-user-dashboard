@@ -1,9 +1,10 @@
-import { 
-	Component, 
-	OnInit, 
+import {
+	Component,
+	OnInit,
 	Input,
 	Output,
-	EventEmitter } from '@angular/core';
+	EventEmitter
+} from '@angular/core';
 import { Comment } from 'classes/comment';
 
 import { AuthService } from 'app/services/auth.service';
@@ -18,9 +19,9 @@ import { CommentService } from 'app/services/comment.service';
 				<li *ngFor="let error of errors">{{error}}</li>
 			</ul>
 			<form>
-				<textarea 
-					name="text" 
-					[(ngModel)]="commentBuffer.text" 
+				<textarea
+					name="text"
+					[(ngModel)]="commentBuffer.text"
 					el-autofocus
 					(blur)="commentBuffer.text === '' ? cancelComment() : postComment()"
 				></textarea>
@@ -44,11 +45,11 @@ export class PostCommentComponent implements OnInit {
 	@Output() commentCanceled = new EventEmitter();
 	errors: string[];
 	commentBuffer: Comment = new Comment();
-	
+
 	constructor(
 		private _comments: CommentService,
 		private _auth: AuthService
-	){}
+	) {}
 
 	postComment() {
 		this._comments.postComment(this.commentBuffer)
@@ -57,16 +58,14 @@ export class PostCommentComponent implements OnInit {
 				this.resetBuffers();
 			})
 			.catch(errorResponse => {
-				this.errors = errorResponse.json();		
+				this.errors = errorResponse.json();
 				this.commentFailed.emit();
 			})
 	}
-	
+
 	cancelComment() {
 		this.commentCanceled.emit();
 	}
-
-
 
 	resetBuffers() {
 		this.commentBuffer = new Comment();
@@ -74,7 +73,7 @@ export class PostCommentComponent implements OnInit {
 		this.commentBuffer.commentFrom = this._auth.userID();
 	}
 
-	doStuff(e){
+	doStuff(e) {
 		console.log('stuff')
 		console.log(e);
 		e.preventDefault();

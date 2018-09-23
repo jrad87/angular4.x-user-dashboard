@@ -7,7 +7,7 @@ import { AuthService } from 'app/services/auth.service';
 	templateUrl: './main-nav.component.html',
 	styleUrls: ['./main-nav.component.css']
 })
-export class MainNavComponent{
+export class MainNavComponent {
 	constructor(
 		private _auth: AuthService
 	) {}

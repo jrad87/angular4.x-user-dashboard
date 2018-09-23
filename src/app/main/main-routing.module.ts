@@ -13,7 +13,6 @@ const mainRoutes: Routes = [
 		component: MainComponent,
 		children: [{
 			path: '',
-			
 			children: [
 				{ path: 'home', canActivate: [OuterAuthGuard], component: HomeComponent },
 				{ path: 'login',  canActivate: [OuterAuthGuard], component: LoginComponent },

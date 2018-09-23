@@ -3,37 +3,39 @@ import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import * as io from 'socket.io-client';
 
-@Injectable() 
+@Injectable()
 export class NotificationService {
-	
+
 	socket;
-	
-	triggerTimeout(){
-		this.socket.emit('triggerTimeout', null);
+
+	triggerTimeout() {
+		this.socket.emit('timeouts::triggerTimeout', null);
 	}
 
-	testSocket(){
-		this.socket.emit('testSocket');
+	connectUser(userId) {
+		this.socket.emit('timeouts::userConnected', userId);
 	}
 
-	connectUser(userId){
-		this.socket.emit('userConnected', userId);
+	logoutUser(userId) {
+		this.socket.emit('timeouts::userLogout')
 	}
 
-	logoutUser(userId){
-		this.socket.emit('userLogout')
+	timeoutAll() {
+		this.socket.emit('timeouts::timeoutAll')
 	}
 
-	connection(){
-		let observable = new Observable( observer => {
-			this.socket = io('http://localhost:8000');
-			this.socket.on('testProcess', () => {
+	connection() {
+		const observable = new Observable( observer => {
+			this.socket = io('http://localhost:8000')
+			this.socket.on('timeouts::testProcess', () => {
 				console.log('This part works');
 			})
-			this.socket.on('timeoutOccurred', (data) => {
+
+			this.socket.on('timeouts::timeoutOccurred', (data) => {
+				console.log(data)
 				observer.next(data)
 			})
-			
+
 			return () => {
 				this.socket.disconnect();
 			};

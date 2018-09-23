@@ -6,16 +6,16 @@ import { CommentService } from 'app/services/comment.service';
 
 @Component({
 	selector: 'app-show-comment',
-	template:`
-		<div class="comment-container" 
+	template: `
+	<div class="comment-container"
 			*ngIf="!isEditing">
 			<h2>{{comment.commentFrom.username}} said ...</h2>
 			<p>{{comment.text}}</p>
-			<button 
+			<button
 				*ngIf="hasEditPrivileges"
 				(click)="toggleEditing()"
 			>Edit</button>
-			<button 
+			<button
 				*ngIf="hasDeletePrivileges"
 				(click)="deleteComment()"
 			>Delete</button>
@@ -26,7 +26,7 @@ import { CommentService } from 'app/services/comment.service';
 			<ul *ngIf="errors">
 				<li *ngFor="let error of errors">{{error}}</li>
 			</ul>
-			<textarea 
+			<textarea
 				placeholder="{{comment.text}}"
 				[(ngModel)]="editCommentBuffer"
 			></textarea>
@@ -50,12 +50,12 @@ export class ShowCommentComponent implements OnInit {
 	@Input() comment: Comment = new Comment();
 	@Input() messageTo: string;
 	@Output() messageChanged = new EventEmitter();
-	
-	hasDeletePrivileges: boolean = false;
-	hasEditPrivileges: boolean = false;
-	isEditing: boolean = false;
 
-	editCommentBuffer: string = "";
+	hasDeletePrivileges = false;
+	hasEditPrivileges = false;
+	isEditing = false;
+
+	editCommentBuffer = '';
 	errors: string[] = [];
 
 	displayErrors(errors: string[]) {
@@ -75,7 +75,7 @@ export class ShowCommentComponent implements OnInit {
 	}
 
 	editComment() {
-		//console.log(this.editCommentBuffer);
+		// console.log(this.editCommentBuffer);
 		this._comments.editComment(this.comment, this.editCommentBuffer)
 			.then(updatedMessage => {
 				this.messageChanged.emit(updatedMessage);
@@ -86,14 +86,15 @@ export class ShowCommentComponent implements OnInit {
 	constructor(
 		private _comments: CommentService,
 		private _auth: AuthService
-	){}
-		
-	ngOnInit(){
-		if (this._auth.userID() === (this.comment.commentFrom as User)._id.toString()){
+	) {}
+
+	ngOnInit() {
+		console.log()
+		if (this._auth.userID() === (this.comment.commentFrom as User)._id.toString()) {
 			this.hasDeletePrivileges = true;
 			this.hasEditPrivileges = true;
 		}
-		if (this._auth.userID() === this.messageTo){
+		else if (this._auth.userID() === this.messageTo) {
 			this.hasDeletePrivileges = true;
 			this.hasEditPrivileges = false;
 		}

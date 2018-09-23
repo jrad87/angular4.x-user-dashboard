@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { User } from 'classes/user';
-import { AuthService } from 'app/services/auth.service'; 
+import { AuthService } from 'app/services/auth.service';
 
 @Component({
 	selector: 'app-login',
@@ -35,4 +35,4 @@ export class LoginComponent implements OnInit {
 		this.user = new User();
 		this.serverErrors = [];
 	}
-}	
+}

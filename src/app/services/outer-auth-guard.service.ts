@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, 
-		 CanActivateChild, 
+import { CanActivate,
+		 CanActivateChild,
 		 Router,
 		 ActivatedRouteSnapshot,
 		 RouterStateSnapshot } from '@angular/router';
@@ -11,12 +11,12 @@ export class OuterAuthGuard implements CanActivate, CanActivateChild {
 	constructor(
 		private _router: Router,
 		private _auth: AuthService
-	){}
+	) {}
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-		return this.checkAuth();	
+		return this.checkAuth();
 	}
-	canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot):boolean {
+	canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
 		return this.canActivate(route, state);
 	}
 

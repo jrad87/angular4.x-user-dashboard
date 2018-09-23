@@ -1,6 +1,6 @@
-import { 
-	Component, 
-	Input, 
+import {
+	Component,
+	Input,
 	Output,
 	EventEmitter,
 	OnInit } from '@angular/core';
@@ -11,23 +11,23 @@ import { AuthService } from 'app/services/auth.service';
 
 @Component({
 	selector: 'app-show-message',
-	template:`
+	template: `
 		<div class="row">
 			<div class="col-md-8">
 				<div class="message-container">
 					<div *ngIf="!isEditing">
 						<h2><a [routerLink]="['../', message.messageFrom._id]">
 								{{message.messageFrom.username}}
-							</a> 
+							</a>
 							said at {{message.createdAt | date}}
 						</h2>
 						<p>{{message.text}}</p>
 					</div>
-					<div *ngIf="isEditing">
-						<form>
-							<textarea placeholder="{{message.text}}"></textarea>
-						</form>
-					</div>
+					<edit-message-form 
+						*ngIf="isEditing"
+						[message]="message"
+						(editingEnded)="toggleEditing()">						
+					</edit-message-form>									
 					<div>
 						<app-show-comment
 							*ngFor="let comment of message.comments"
@@ -36,7 +36,7 @@ import { AuthService } from 'app/services/auth.service';
 							(messageChanged)="updateMessage($event)">
 						</app-show-comment>
 					</div>
-					<app-post-comment 
+					<app-post-comment
 						*ngIf="isCommenting"
 						(commentPosted)="addComment($event)"
 						(commentCanceled)="toggleCommenting()"
@@ -45,7 +45,7 @@ import { AuthService } from 'app/services/auth.service';
 				</div>
 			</div>
 			<div class="col-md-4">
-				<app-message-actions  
+				<app-message-actions
 					[message]="message"
 					(clickedDelete)="deleteMessage(message._id)"
 					(clickedComment)="toggleCommenting()"
@@ -66,31 +66,31 @@ import { AuthService } from 'app/services/auth.service';
 	`]
 })
 
-export class ShowMessageComponent implements OnInit{
-	
+export class ShowMessageComponent implements OnInit {
 	@Input() message: Message;
 	@Output() messageDeleted = new EventEmitter();
-	isCommenting: boolean = false;
-	isEditing: boolean = false;
+	isCommenting = false;
+	isEditing = false;
 
 	constructor(
 		private _messages: MessageService,
 		private _auth: AuthService
-	){}
-	
-	deleteMessage(id){
+	) {}
+
+	deleteMessage(id) {
 		this._messages.deleteMessage(id)
-			.then( () => {	
+			.then( () => {
 				this.messageDeleted.emit(id);
 			})
 			.catch(console.log);
 	}
 
-	updateMessage(newMessage){
-		this.message = newMessage;	
+	updateMessage(newMessage) {
+		console.log(newMessage)
+		this.message = newMessage;
 	}
 
-	addComment(id: string): void{
+	addComment(id: string): void {
 		this._messages.addComment(id, this.message._id.toString())
 			.then(message => {
 				this.message = message;
@@ -98,9 +98,16 @@ export class ShowMessageComponent implements OnInit{
 			})
 			.catch(console.log);
 	}
-	
-	toggleCommenting() { this.isCommenting = !this.isCommenting; }
-	toggleEditing() { this.isEditing = !this.isEditing; }
-	
-	ngOnInit(){}
+
+	toggleCommenting() { 
+		this.isCommenting = !this.isCommenting; 
+	}
+	toggleEditing() { 
+		console.log('Toggling editing');
+		this.isEditing = !this.isEditing; 
+	}
+
+	ngOnInit() {
+		//console.log(this.message);
+	}
 }

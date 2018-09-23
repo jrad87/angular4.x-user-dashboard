@@ -3,10 +3,10 @@ import { AuthService } from 'app/services/auth.service';
 
 @Component({
 	selector: 'app-errors-nav',
-	template:`
+	template: `
 		<nav>
 			<div class="container">
-				<div class="row"> 
+				<div class="row">
 					<div class="col-md-12">
 						<h1 class="hero"><a routerLink="/">User Dashboard</a></h1>
 					</div>
@@ -24,5 +24,5 @@ import { AuthService } from 'app/services/auth.service';
 export class ErrorsNavComponent {
 	constructor(
 		private _auth: AuthService
-	){}
+	) {}
 }

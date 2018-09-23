@@ -20,6 +20,7 @@ import { AllUsersComponent } from './all-users/all-users.component';
 import { ShowUserComponent } from './show-user/show-user.component';
 import { ShowProfileComponent } from './show-user/show-profile/show-profile.component';
 import { PostMessageComponent } from './show-user/post-message/post-message.component';
+import { EditMessageFormComponent } from './show-user/show-message/edit-message-form.component'
 import { ShowMessageComponent } from './show-user/show-message/show-message.component';
 import { PostCommentComponent } from './show-user/show-message/post-comment.component';
 import { ShowCommentComponent } from './show-user/show-message/show-comment.component';
@@ -40,6 +41,7 @@ import { AutofocusDirective } from '../directives/autofocus.directive'
 		AllUsersComponent,
 		ShowUserComponent,
 		ShowProfileComponent,
+		EditMessageFormComponent,
 		PostMessageComponent,
 		ShowMessageComponent,
 		PostCommentComponent,

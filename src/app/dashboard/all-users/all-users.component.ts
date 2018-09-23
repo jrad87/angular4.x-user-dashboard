@@ -17,8 +17,8 @@ export class AllUsersComponent implements OnInit {
 		private _auth: AuthService,
 		private _users: UserService,
 		private _friends: FriendService
-	){}
-	partitionUsers (users: User[]): void{
+	) {}
+	partitionUsers (users: User[]): void {
 		this.currentUser = users.find(user => user._id === this._auth.userID());
 		this.currentUsersFriends = users.filter(user => {
 			return this.currentUser.friends.find(friend => {
@@ -35,43 +35,48 @@ export class AllUsersComponent implements OnInit {
 				return (<FriendRequest>friendRequest).requester === (<User>this.currentUser)._id;
 			});
 
-			if (request) return Object.assign(user, {
-				sentRequest: true, 
-				requestId: (<FriendRequest>request)._id});
+			if (request) {
+				return Object.assign(user, {
+					sentRequest: true,
+					requestId: (<FriendRequest>request)._id});
+				}
 
 			request = user.friendRequests.find(friendRequest => {
 				return (<FriendRequest>friendRequest).requestee === (<User>this.currentUser)._id;
 			});
-			
-			if (request) return Object.assign(user, {
-				receivedRequest: true, 
+
+			if (request) {
+				return Object.assign(user, {
+				receivedRequest: true,
 				requestId: (<FriendRequest>request)._id});
+			}
+
 			return user;
 		});
 	}
-	blockUser(){
+	blockUser() {
 		console.log('User blocked');
-		//TODO
+		// TODO
 	}
-	reportUser(){
+	reportUser() {
 		console.log('User reported');
 	}
-	unfriendUser(){
+	unfriendUser() {
 		console.log('User unfriended');
 	}
-	placeFriendRequest(requestee){
+	placeFriendRequest(requestee) {
 		this._friends.request((<User>this.currentUser)._id, requestee)
 			.then( () => this._users.index())
 			.then(users => this.partitionUsers(users))
 			.catch(console.log);
 	}
-	acceptRequest(requestId){
+	acceptRequest(requestId) {
 		this._friends.acceptRequest(requestId)
 			.then( () => this._users.index())
 			.then(users => this.partitionUsers(users))
 			.catch(console.log);
 	}
-	rejectRequest(requestId){
+	rejectRequest(requestId) {
 		this._friends.rejectRequest(requestId)
 			.then(rejectedRequest => {
 				this.currentUser = rejectedRequest.requestee;
@@ -81,17 +86,17 @@ export class AllUsersComponent implements OnInit {
 			})
 			.catch(console.log);
 	}
-	cancelRequest(requestId){
+	cancelRequest(requestId) {
 		this._friends.cancelRequest(requestId)
 			.then(canceledRequest => {
 				this.currentUser = canceledRequest.requester;
-				this.otherUsers[this.otherUsers.findIndex(user =>{
+				this.otherUsers[this.otherUsers.findIndex(user => {
 					return user._id.toString() === canceledRequest.requestee._id.toString();
 				})] = canceledRequest.requestee;
 			})
 			.catch(console.log);
 	}
-	ngOnInit(){
+	ngOnInit() {
 		this.currentUser = new User();
 		this._users.index()
 			.then(users => this.partitionUsers(users))
