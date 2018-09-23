@@ -28,6 +28,7 @@
     "core-js": "^2.5.5",
     "cryptiles": "^4.1.2",
     "debug": "^2.6.9",
+    "engine.io-client": "^3.2.1",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
     "https-proxy-agent": "^2.2.0",
