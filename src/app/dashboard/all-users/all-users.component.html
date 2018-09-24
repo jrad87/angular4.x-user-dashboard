@@ -7,8 +7,7 @@
 <div class="row">
 	<div class="col-md-12">
 		<h2>Your friends</h2>
-		<p *ngIf="!currentUsersFriends.length">You have no friends!</p>
-		<table *ngIf="currentUsersFriends.length">
+		<table *ngIf="currentUsersFriends.length; else noFriends">
 			<thead>
 				<tr>
 					<th>Name</th>
@@ -32,18 +31,20 @@
 					<td>
 						<button (click)="unfriendUser(user._id, currentUser._id)">Unfriend</button>
 						<button (click)="blockUser()">Block</button>
-						<button (click)="reportUser()">Report</button>
+						<!--button (click)="reportUser()">Report</button-->
 					</td>
 				</tr>
 			</tbody>
 		</table>
+		<ng-template #noFriends>
+			<p>You have no friends!</p>
+		</ng-template>
 	</div>
 </div>
 <div class="row">
 	<div class="col-md-12">
 		<h2>Other Users</h2>
-		<p *ngIf="!otherUsers.length">No other users currently registered!</p>
-		<table *ngIf="otherUsers.length">
+		<table *ngIf="otherUsers.length; else noOtherUsers">
 			<thead>
 				<tr>
 					<th>Name</th>
@@ -79,5 +80,8 @@
 				</tr>
 			</tbody>
 		</table>
+		<ng-template #noOtherUsers>
+			<p>No other users currently registered!</p>
+		</ng-template>
 	</div>
 </div>
