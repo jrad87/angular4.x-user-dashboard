@@ -23,6 +23,7 @@ module.exports = function(app){
 		.post('/api/friends/:id', friends.acceptRequest)
 		.delete('/api/friends/reject/:id', friends.rejectRequest)
 		.delete('/api/friends/cancel/:id', friends.cancelRequest)
+		.put('/api/friends/unfriend', friends.unfriend)
 
 		.post('/api/messages/:user_id', messages.postMessage)
 		.delete('/api/messages/:id', messages.deleteMessage)

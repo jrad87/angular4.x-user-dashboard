@@ -66,6 +66,14 @@ userSchema.pre('save', function(next){
 	});
 });
 
+userSchema.statics.index = function() {
+	return this.model('User')
+		.find({})
+		.select('-password')
+		.populate('friendRequests')
+		
+}
+
 userSchema.methods.createProfile = function(){
 	return this.model('UserProfile').create({})
 		.then(newProfile => {

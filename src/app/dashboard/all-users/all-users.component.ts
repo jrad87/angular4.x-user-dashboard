@@ -61,7 +61,9 @@ export class AllUsersComponent implements OnInit {
 	reportUser() {
 		console.log('User reported');
 	}
-	unfriendUser() {
+	unfriendUser(unfriendee, unfriender) {
+		this._friends.unfriend(unfriendee, unfriender)
+			.then(users => this.partitionUsers(users));
 		console.log('User unfriended');
 	}
 	placeFriendRequest(requestee) {

@@ -14,6 +14,29 @@ const friendRequestSchema = new Schema({
 	timestamps: true
 });
 
+friendRequestSchema.statics.unfriend = function(unfrienderId, unfriendeeId) {
+	return this.model('User').findById(unfrienderId)
+		.then(unfriender => {
+			console.log(unfriender.friends)
+			unfriender.friends.splice(
+				unfriender.friends.indexOf(id => id === unfriendeeId),
+				1
+			)
+			console.log('unfriender: ', unfriender)
+			return unfriender.save()
+		})
+		.then(() => this.model('User').findById(unfriendeeId))
+		.then(unfriendee => {
+			unfriendee.friends.splice(
+				unfriendee.friends.indexOf(id => id === unfrienderId),
+				1
+			)
+			console.log('unfriendee', unfriendee)
+			return unfriendee.save()
+		})
+		.then(() => this.model('User').index())
+}
+
 friendRequestSchema.methods.placeRequest = function(){
 	return this.model('User').findById(this.requester)
 		.then(user => {

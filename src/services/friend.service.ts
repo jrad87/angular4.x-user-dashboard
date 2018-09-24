@@ -32,4 +32,13 @@ export class FriendService {
 			.map(data => data.json())
 			.toPromise();
 	}
+	unfriend(unfrienderId, unfriendeeId) {
+		let friends = {
+			unfriender : unfrienderId,
+			unfriendee : unfriendeeId
+		}
+		return this._http.put('/api/friends/unfriend', friends)
+			.map(data => data.json())
+			.toPromise()
+	}
 }

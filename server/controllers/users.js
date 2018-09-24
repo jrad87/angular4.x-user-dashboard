@@ -3,9 +3,7 @@ const errorHandler = require('../utils/error-handler');
 
 module.exports = {
 	index(request, response){
-		User.find({})
-			.select('-password')
-			.populate('friendRequests')
+		User.index()
 			.then(users => response.json(users))
 			.catch(console.log);
 	},
