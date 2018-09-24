@@ -12,6 +12,8 @@ export class InnerAuthGuard implements CanActivate {
 		private _router: Router
 	) {}
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+		console.log(route);
+		
 		return this.checkAuth();
 	}
 	checkAuth(): boolean {

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { InnerAuthGuard } from '../services/inner-auth-guard.service';
+import { UserBlockGuard } from 'services/user-block-guard.service';
 
 import { DashboardComponent } from './dashboard.component';
 
@@ -16,7 +17,7 @@ const dashboardRoutes: Routes = [
 			path:'',
 			children: [
 				{ path: '', component: AllUsersComponent},
-				{ path: 'users/:id', component: ShowUserComponent }
+				{ path: 'users/:id', component: ShowUserComponent, canActivate: [UserBlockGuard] }
 			]
 		}]
 	}

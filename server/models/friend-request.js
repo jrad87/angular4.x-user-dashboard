@@ -17,21 +17,20 @@ const friendRequestSchema = new Schema({
 friendRequestSchema.statics.unfriend = function(unfrienderId, unfriendeeId) {
 	return this.model('User').findById(unfrienderId)
 		.then(unfriender => {
-			console.log(unfriender.friends)
-			unfriender.friends.splice(
-				unfriender.friends.indexOf(id => id === unfriendeeId),
-				1
-			)
+			let index = unfriender.friends.findIndex(id => id.toString() === unfriendeeId);
+			if(index < 0) index = unfriender.friends.length + 1
+			let friends = unfriender.friends.slice(0, index).concat(unfriender.friends.slice(index + 1))
+			unfriender.friends = friends
 			console.log('unfriender: ', unfriender)
 			return unfriender.save()
 		})
 		.then(() => this.model('User').findById(unfriendeeId))
 		.then(unfriendee => {
-			unfriendee.friends.splice(
-				unfriendee.friends.indexOf(id => id === unfrienderId),
-				1
-			)
-			console.log('unfriendee', unfriendee)
+			let index = unfriendee.friends.findIndex(id => id.toString() === unfrienderId);
+			if(index < 0) index = unfriendee.friends.length + 1
+			let friends = unfriendee.friends.slice(0, index).concat(unfriendee.friends.slice(index + 1))
+			unfriendee.friends = friends
+			console.log('unfriendee: ', unfriendee)
 			return unfriendee.save()
 		})
 		.then(() => this.model('User').index())

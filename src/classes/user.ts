@@ -7,5 +7,6 @@ export class User {
 	username: string;
 	messages: Array<Message | string>;
 	friends: Array<User | string>;
+	blockedBy: Array<User | string>;
 	friendRequests: Array<FriendRequest | string>;
 }

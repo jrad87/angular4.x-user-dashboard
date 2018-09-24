@@ -46,6 +46,10 @@ const userSchema = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'FriendRequest'
 	}],
+	blockedBy: [{
+		type: Schema.Types.ObjectId,
+		ref: 'User'
+	}],
 	profile: {
 		type: Schema.Types.ObjectId,
 		ref: 'UserProfile'

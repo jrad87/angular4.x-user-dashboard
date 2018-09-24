@@ -6,6 +6,7 @@ import { HttpModule } from '@angular/http';
 import { UserService } from 'app/services/user.service';
 import { AuthService } from 'app/services/auth.service';
 import { InnerAuthGuard } from 'app/services/inner-auth-guard.service';
+import { UserBlockGuard } from 'services/user-block-guard.service';
 import { MessageService } from 'app/services/message.service';
 import { CommentService } from 'app/services/comment.service';
 import { ProfileService } from 'app/services/profile.service';
@@ -54,10 +55,11 @@ import { AutofocusDirective } from '../directives/autofocus.directive'
 		UserService,
 		MessageService,
 		CommentService,
-		InnerAuthGuard,
 		ProfileService,
 		FriendService,
-		NotificationService
+		NotificationService,
+		InnerAuthGuard,
+		UserBlockGuard
 	]
 })
 export class DashboardModule {}
