@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from 'services/auth.service';
 import { NotificationService } from 'services/notification.service';
 
 @Component({
@@ -16,6 +16,7 @@ import { NotificationService } from 'services/notification.service';
 					<div class="col-md-2">
 						<button (click)="logout()">Logout</button>
 						<button (click)="testTimeout()">Test Timeout</button>
+						<button (click)="goToSettings()">Settings</button>
 					</div>
 				</div>
 			</div>
@@ -44,6 +45,11 @@ export class DashboardNavComponent implements OnInit, OnDestroy {
 	testTimeout() {
 		this._notify.timeoutAll()
 		// console.log('Button clicked');
+	}
+
+	goToSettings() {
+		console.log('Navigating');
+		this._router.navigate(['/dashboard/settings']);
 	}
 
 	ngOnInit() {

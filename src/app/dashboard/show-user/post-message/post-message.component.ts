@@ -8,9 +8,9 @@ import {
 	EventEmitter
 } from '@angular/core';
 import { Message } from 'classes/message';
-import { MessageService } from 'app/services/message.service';
-import { AuthService } from 'app/services/auth.service';
-import { UserService } from 'app/services/user.service';
+import { MessageService } from 'services/message.service';
+import { AuthService } from 'services/auth.service';
+import { UserService } from 'services/user.service';
 
 @Component({
 	selector: '<app-post-message>',

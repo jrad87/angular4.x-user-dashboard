@@ -14,26 +14,31 @@ const friendRequestSchema = new Schema({
 	timestamps: true
 });
 
+friendRequestSchema.statics.block = function(blockerId, blockeeId) {
+	return this.model('User').unfriend(blockerId, blockeeId)
+		.then(unfriendedUser => {
+			unfriendedUser.blockedBy.push(blockerId)
+			return unfriendedUser.save()
+		})
+}
+
 friendRequestSchema.statics.unfriend = function(unfrienderId, unfriendeeId) {
 	return this.model('User').findById(unfrienderId)
 		.then(unfriender => {
-			let index = unfriender.friends.findIndex(id => id.toString() === unfriendeeId);
+			let index = unfriender.friends.findIndex(id => id.toString() === unfriendeeId.toString());
 			if(index < 0) index = unfriender.friends.length + 1
 			let friends = unfriender.friends.slice(0, index).concat(unfriender.friends.slice(index + 1))
 			unfriender.friends = friends
-			console.log('unfriender: ', unfriender)
 			return unfriender.save()
 		})
 		.then(() => this.model('User').findById(unfriendeeId))
 		.then(unfriendee => {
-			let index = unfriendee.friends.findIndex(id => id.toString() === unfrienderId);
+			let index = unfriendee.friends.findIndex(id => id.toString() === unfrienderId.toString());
 			if(index < 0) index = unfriendee.friends.length + 1
 			let friends = unfriendee.friends.slice(0, index).concat(unfriendee.friends.slice(index + 1))
 			unfriendee.friends = friends
-			console.log('unfriendee: ', unfriendee)
 			return unfriendee.save()
 		})
-		.then(() => this.model('User').index())
 }
 
 friendRequestSchema.methods.placeRequest = function(){

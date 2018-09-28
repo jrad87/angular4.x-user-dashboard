@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 
 import { User } from 'classes/user';
 import { FriendRequest } from 'classes/friend-request';
-import { UserService } from 'app/services/user.service';
-import { AuthService } from 'app/services/auth.service';
+import { UserService } from 'services/user.service';
+import { AuthService } from 'services/auth.service';
 import { FriendService } from 'services/friend.service';
 
 @Component({
@@ -19,8 +19,15 @@ export class AllUsersComponent implements OnInit {
 		private _friends: FriendService
 	) {}
 	partitionUsers (users: User[]): void {
+		
 		this.currentUser = users.find(user => user._id === this._auth.userID());
-		this.currentUsersFriends = users.filter(user => {
+		const visibleUsers = users.filter(user => {
+			return (
+				(this.currentUser.blocked.findIndex(id => id === user._id) < 0) &&
+				(this.currentUser.blockedBy.findIndex(id => id === user._id) < 0)
+			);
+		});
+		this.currentUsersFriends = visibleUsers.filter(user => {
 			return this.currentUser.friends.find(friend => {
 				if ((<User>friend)._id)	{
 					return (<User>friend)._id.toString() === user._id.toString();
@@ -28,7 +35,7 @@ export class AllUsersComponent implements OnInit {
 				return friend.toString() === user._id.toString();
 			});
 		})
-		this.otherUsers = users.filter(user => {
+		this.otherUsers = visibleUsers.filter(user => {
 			return (user._id !== this.currentUser._id) && (!this.currentUsersFriends.includes(user));
 		}).map( user => {
 			let request = user.friendRequests.find(friendRequest => {
@@ -54,9 +61,10 @@ export class AllUsersComponent implements OnInit {
 			return user;
 		});
 	}
-	blockUser() {
-		console.log('User blocked');
-		// TODO
+	blockUser(id: string) {
+		this._users.block(this._auth.userID(), id)
+			.then(users => this.partitionUsers(users))
+			.catch(console.log)
 	}
 	reportUser() {
 		console.log('User reported');

@@ -3,7 +3,10 @@ import {
     OnInit,
     Input,
     Output,
-    EventEmitter
+    EventEmitter,
+    ViewChild,
+    AfterViewInit,
+    ElementRef
 } from '@angular/core'
 
 import { Message } from 'classes/message'
@@ -13,14 +16,16 @@ import { Message } from 'classes/message'
     template: `
         <div>
             <form>
-                <textarea placeholder="{{message.text}}"></textarea>
-                <button (click)="cancelEdit()">Cancel</button>
-                <button (click)="saveEdit()">Save Edit</button>    
+                <textarea #editMessageInput>{{message.text}}</textarea>
+                <button type="button" (click)="cancelEdit()">Cancel</button>
+                <button type="button" (click)="saveEdit()">Save Edit</button>    
             </form>
         </div>
     `, 
     styles: []
-}) export class EditMessageFormComponent implements OnInit {
+}) export class EditMessageFormComponent implements OnInit, AfterViewInit {
+    @ViewChild('editMessageInput') 
+    editMessageInput: ElementRef;
     @Input() message : Message;
     @Output() editingEnded = new EventEmitter()
     saveEdit() {
@@ -33,5 +38,10 @@ import { Message } from 'classes/message'
     }
     ngOnInit() {
         //console.log(this.message)
+    }
+    ngAfterViewInit() {
+        console.log(this.editMessageInput.nativeElement)
+        
+        this.editMessageInput.nativeElement.focus()
     }
 }

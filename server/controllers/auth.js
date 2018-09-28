@@ -22,16 +22,24 @@ module.exports = {
 			})
 			.catch(errorHandler.bind(response));
 	},
-	register(request, response){
-		User.findOne({username: request.body.username})
+	register(req, res){
+		User.findOne({username: req.body.username})
 			.then(user => {
 				if(user) throw new Error('User already exists, please login');
-				request.body.isActive = true;
-				return User.create(request.body)
+			})
+			.then(() => {
+				if( (req.body.password !== null) &&
+					(req.body.confirmPW !== null) &&
+					(req.body.password !== req.body.confirmPW) 
+				) { throw new Error('Password must match confirmation') }
+			})
+			.then(() => {
+				req.body.isActive = true;
+				return User.create(req.body)
 			})
 			.then(newUser => newUser.createProfile())
-			.then(newUser => login(request, response, newUser))
-			.catch(errorHandler.bind(response));
+			.then(newUser => login(req, res, newUser))
+			.catch(errorHandler.bind(res));
 	},
 	logout(request, response){
 		User.findByIdAndUpdate(request.session.user._id, {$set: {isActive: false}}, {new: true})

@@ -4,7 +4,7 @@ const User = require('mongoose').model('User');
 let socketUserLookup = {};
 
 let timer;
-const LOG_TIMEOUT_QUEUE_INTERVAL = 2000
+const LOG_TIMEOUT_QUEUE_INTERVAL = 5000
 const TIMEOUT_MILLIS = 30 * LOG_TIMEOUT_QUEUE_INTERVAL
 
 
@@ -35,7 +35,6 @@ module.exports = function(socket, io){
     }
     socket.on('timeouts::userConnected', (userId) => {
         Timeouts.Queue()
-            .then(queue => console.log(queue))
             .then(() => {
                 socketUserLookup[socket.id] = userId;
                 if (!timer || !timer._onTimeout) {
@@ -66,7 +65,6 @@ module.exports = function(socket, io){
             .then(queue => {
                 Object.keys(socketUserLookup)
                     .forEach(socketId => {
-                        console.log(socketId)
                         let socket = socketUserLookup[socketId]
                         io.sockets.to(socketId).emit('timeouts::timeoutOccurred')
                     })

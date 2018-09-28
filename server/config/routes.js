@@ -17,6 +17,10 @@ module.exports = function(app){
 		
 		.get('/api/users', users.index)
 		.get('/api/users/:id', users.show)
+		.post('/api/users/:id/blocked', users.getBlockedList)
+		.post('/api/users/:id/blockers', users.getBlockerList)
+		.post('/api/users/:id/block', users.blockUser)
+		.post('/api/users/:id/unblock', users.unblockUser)
 		.put('/api/users/messages/:u_id', users.sendMessage)
 		
 		.post('/api/users/:id/friend', friends.requestFriend)

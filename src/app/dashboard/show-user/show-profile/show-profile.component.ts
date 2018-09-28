@@ -5,7 +5,7 @@ import {
 	OnChanges,
 	SimpleChanges
 } from '@angular/core';
-import { ProfileService } from 'app/services/profile.service';
+import { ProfileService } from 'services/profile.service';
 import { User } from 'classes/user';
 
 class Profile {
@@ -23,7 +23,7 @@ export class ShowProfileComponent implements OnChanges {
 	constructor(
 		private _profile: ProfileService
 	) {}
-	OnInit() {
+	ngOnInit() {
 		this._profile.show(this.user.profile)
 			.then(profile => {
 				this.profile = profile
@@ -31,6 +31,7 @@ export class ShowProfileComponent implements OnChanges {
 			.catch(console.log);
 	}
 	ngOnChanges(changes: SimpleChanges) {
+		//console.log(changes);
 		if (changes.user && changes.user.currentValue && !changes.user.firstChange ) {
 			this._profile.show(this.user.profile)
 				.then(profile => {

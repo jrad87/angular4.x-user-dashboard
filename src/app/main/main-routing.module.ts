@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { OuterAuthGuard } from '../services/outer-auth-guard.service';
+import { OuterAuthGuard } from '../../services/outer-auth-guard.service';
 
 import { MainComponent } from './main.component';
 import { HomeComponent } from './home/home.component';

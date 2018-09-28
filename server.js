@@ -8,6 +8,8 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
+
+
 const sessionConfig = {
 	saveUninitialized: true,
 	resave: false,
@@ -32,6 +34,10 @@ app.use(express.static(path.resolve('dist')))
 
 
 require(path.resolve('server', 'config', 'mdb'));
+
+const populateUser = require('./server/modules/populate-user');
+app.use(populateUser)
+
 //require(path.resolve('server', 'config', 'rdb'));
 require(path.resolve('server', 'config', 'routes'))(app);
 require(path.resolve('server', 'config', 'sockets'))(io);

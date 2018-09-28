@@ -1,8 +1,8 @@
 import { Component,	OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Comment } from 'classes/comment';
 import { User } from 'classes/user';
-import { AuthService } from 'app/services/auth.service';
-import { CommentService } from 'app/services/comment.service';
+import { AuthService } from 'services/auth.service';
+import { CommentService } from 'services/comment.service';
 
 @Component({
 	selector: 'app-show-comment',

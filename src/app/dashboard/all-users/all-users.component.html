@@ -30,7 +30,7 @@
 					<td>{{user.createdAt | date}}</td>
 					<td>
 						<button (click)="unfriendUser(user._id, currentUser._id)">Unfriend</button>
-						<button (click)="blockUser()">Block</button>
+						<button (click)="blockUser(user._id)">Block</button>
 						<!--button (click)="reportUser()">Report</button-->
 					</td>
 				</tr>

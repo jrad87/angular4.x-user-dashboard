@@ -31,6 +31,10 @@ module.exports = {
 	},
 	unfriend(req, res) {
 		FriendRequest.unfriend(req.body.unfriender, req.body.unfriendee)
+			.then(() => User.index())
 			.then(users => res.json(users))
+	},
+	block(req, res) {
+		
 	}
 }

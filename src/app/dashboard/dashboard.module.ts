@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
-import { UserService } from 'app/services/user.service';
-import { AuthService } from 'app/services/auth.service';
-import { InnerAuthGuard } from 'app/services/inner-auth-guard.service';
+import { UserService } from 'services/user.service';
+import { AuthService } from 'services/auth.service';
+import { InnerAuthGuard } from 'services/inner-auth-guard.service';
 import { UserBlockGuard } from 'services/user-block-guard.service';
-import { MessageService } from 'app/services/message.service';
-import { CommentService } from 'app/services/comment.service';
-import { ProfileService } from 'app/services/profile.service';
+import { MessageService } from 'services/message.service';
+import { CommentService } from 'services/comment.service';
+import { ProfileService } from 'services/profile.service';
 import { FriendService } from 'services/friend.service';
 import { NotificationService } from 'services/notification.service';
 
@@ -26,7 +26,8 @@ import { ShowMessageComponent } from './show-user/show-message/show-message.comp
 import { PostCommentComponent } from './show-user/show-message/post-comment.component';
 import { ShowCommentComponent } from './show-user/show-message/show-comment.component';
 import { MessageActionsComponent } from './show-user/show-message/message-actions.component';
-
+import { UserSettingsComponent } from './user-settings/user-settings.component';
+ 
 import { AutofocusDirective } from '../directives/autofocus.directive'
 
 @NgModule({
@@ -48,7 +49,8 @@ import { AutofocusDirective } from '../directives/autofocus.directive'
 		PostCommentComponent,
 		ShowCommentComponent,
 		MessageActionsComponent,
-		AutofocusDirective
+		AutofocusDirective,
+		UserSettingsComponent
 	],
 	providers: [
 		AuthService,

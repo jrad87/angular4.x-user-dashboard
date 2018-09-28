@@ -6,8 +6,8 @@ import {
 	OnInit } from '@angular/core';
 import { User } from 'classes/user';
 import { Message } from 'classes/message';
-import { MessageService } from 'app/services/message.service';
-import { AuthService } from 'app/services/auth.service';
+import { MessageService } from 'services/message.service';
+import { AuthService } from 'services/auth.service';
 
 @Component({
 	selector: 'app-show-message',

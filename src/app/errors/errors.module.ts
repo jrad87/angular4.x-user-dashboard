@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
 
-import { AuthService } from '../services/auth.service';
+import { AuthService } from 'services/auth.service';
 
 import { ErrorsRoutingModule } from './errors-routing.module';
 

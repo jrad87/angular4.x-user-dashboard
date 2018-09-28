@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { AuthService } from '../services/auth.service';
-import { OuterAuthGuard } from '../services/outer-auth-guard.service';
+import { AuthService } from 'services/auth.service';
+import { OuterAuthGuard } from 'services/outer-auth-guard.service';
 
 import { MainRoutingModule } from './main-routing.module';
 

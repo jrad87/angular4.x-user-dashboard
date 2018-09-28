@@ -3,12 +3,15 @@ import {
 	OnInit,
 	Input,
 	Output,
-	EventEmitter
+	EventEmitter,
+	ViewChild,
+	AfterViewInit,
+	ElementRef
 } from '@angular/core';
 import { Comment } from 'classes/comment';
 
-import { AuthService } from 'app/services/auth.service';
-import { CommentService } from 'app/services/comment.service';
+import { AuthService } from 'services/auth.service';
+import { CommentService } from 'services/comment.service';
 
 @Component({
 	selector: 'app-post-comment',
@@ -20,12 +23,12 @@ import { CommentService } from 'app/services/comment.service';
 			</ul>
 			<form>
 				<textarea
+					#postCommentInput
 					name="text"
 					[(ngModel)]="commentBuffer.text"
-					el-autofocus
-					(blur)="commentBuffer.text === '' ? cancelComment() : postComment()"
 				></textarea>
 				<button (click)="postComment()" type="button">Add comment</button>
+				<button (click)="cancelComment()" type="button">Cancel</button>
 			</form>
 		</div>
 	`,
@@ -38,7 +41,9 @@ import { CommentService } from 'app/services/comment.service';
 		}
 	`]
 })
-export class PostCommentComponent implements OnInit {
+export class PostCommentComponent implements OnInit, AfterViewInit {
+	@ViewChild('postCommentInput')
+	postCommentInput: ElementRef;
 	@Input() commentOn: string;
 	@Output() commentPosted = new EventEmitter();
 	@Output() commentFailed = new EventEmitter();
@@ -52,6 +57,7 @@ export class PostCommentComponent implements OnInit {
 	) {}
 
 	postComment() {
+		console.log(this.commentBuffer)
 		this._comments.postComment(this.commentBuffer)
 			.then(newComment => {
 				this.commentPosted.emit(newComment);
@@ -73,15 +79,11 @@ export class PostCommentComponent implements OnInit {
 		this.commentBuffer.commentFrom = this._auth.userID();
 	}
 
-	doStuff(e) {
-		console.log('stuff')
-		console.log(e);
-		e.preventDefault();
-		console.log(e);
-	}
-
 	ngOnInit() {
 		this.commentBuffer.commentFrom = this._auth.userID();
 		this.commentBuffer.commentOn = this.commentOn;
+	}
+	ngAfterViewInit() {
+		this.postCommentInput.nativeElement.focus()
 	}
 }

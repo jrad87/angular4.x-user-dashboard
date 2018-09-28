@@ -8,31 +8,8 @@ module.exports = {
 			.catch(console.log);
 	},
 	show(request, response){
-		User.findById(request.params.id)
-			.select('-password')
-			.populate({
-				path: 'messages',
-				model: 'Message',
-				populate: {
-					path: 'messageFrom',
-					model: 'User',
-					select: 'username'
-				}
-			})
-			.populate({
-				path: 'messages',
-				populate: {
-					path: 'comments',
-					model: 'Comment',
-					populate: {
-						path: 'commentFrom',
-						model: 'User',
-						select: 'username'
-					}
-				}
-			})
-			.populate('friendRequests')
-			.then(user => response.json(user))
+		User.show(request.params.id)
+			.then(user => response.json(user))			
 			.catch(console.log);
 	},
 	sendMessage(request, response){
@@ -42,11 +19,30 @@ module.exports = {
 				user.messages.push(request.body);
 				return user.save()
 			})
-			.then(user => {
-				console.log(request.body);
-				console.log(user);
-				response.json(request.body);
-			})
+			.then(user => response.json(request.body))
 			.catch(console.log);
 	},
+	blockUser(req, res) {
+		User.findById(req.body.loggedInUserId)
+			.then(user => user.blockOtherUser(req.params.id))
+			.then(() => User.index())
+			.then(users => res.json(users))
+			.catch(console.log)
+	},
+	unblockUser(req, res) {
+		User.findById(req.body.loggedInUserId)
+			.then(currentUser => currentUser.unblockUser(req.params.id))
+			.then(blockedUsers => res.json(blockedUsers))
+			.catch(console.log)
+	},
+	getBlockedList(req, res) {
+		User.getBlockedList(req.params.id)
+			.then(blockedList => res.json(blockedList))
+			.catch(console.log);
+	},
+	getBlockerList(req, res) {
+		User.getBlockerList(req.params.id)
+			.then(blockerList => res.json(blockerList))
+			.catch(console.log)
+	}
 }

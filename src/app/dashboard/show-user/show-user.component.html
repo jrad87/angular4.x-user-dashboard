@@ -1,12 +1,13 @@
 <div class="row">
 	<div class="col-md-12">
 		<h1>{{user.firstName}} {{user.lastName}}</h1>
-		<div class="col-md-12" *ngIf="!isFriend">
+		<div class="col-md-12" *ngIf="!isFriend && !isSelf">
 			<p>You are not friends with {{user.firstName}}!</p>
-			<p>You will need to add her as a friend to send her messages!</p>
+			<p>You will need to add {{user.firstName}} as a friend to send messages!</p>
 		</div>
 		<app-show-profile
-			[user]="user"></app-show-profile>
+			[user]="user">
+		</app-show-profile>
 	</div>
 </div>
 <div class="row">

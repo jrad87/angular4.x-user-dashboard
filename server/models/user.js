@@ -50,6 +50,10 @@ const userSchema = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'User'
 	}],
+	blocked: [{
+		type: Schema.Types.ObjectId,
+		ref: 'User'
+	}],
 	profile: {
 		type: Schema.Types.ObjectId,
 		ref: 'UserProfile'
@@ -78,6 +82,34 @@ userSchema.statics.index = function() {
 		
 }
 
+userSchema.statics.show = function(id) {
+	return this.model('User')
+		.findById(id)
+		.select('-password')
+		.populate({
+			path: 'messages',
+			model: 'Message',
+			populate: {
+				path: 'messageFrom',
+				model: 'User',
+				select: 'username'
+			}
+		})
+		.populate({
+			path: 'messages',
+			populate: {
+				path: 'comments',
+				model: 'Comment',
+				populate: {
+					path: 'commentFrom',
+					model: 'User',
+					select: 'username'
+				}
+			}
+		})
+		.populate('friendRequests')
+}
+
 userSchema.methods.createProfile = function(){
 	return this.model('UserProfile').create({})
 		.then(newProfile => {
@@ -104,6 +136,53 @@ userSchema.methods.deactivateStatus = function(){
 
 userSchema.methods.clearProfileAfterDelete = function(){
 	return this.model('UserProfile').findByIdAndRemove(this.profile);
+}
+
+userSchema.statics.getBlockerList = function(id) {
+	return this.model('User').findById(id)
+		.select('blockedBy')
+		.then(user => user.blockedBy)
+}
+
+userSchema.statics.getBlockedList = function(id) {
+	return this.model('User').findById(id)
+		.select('blocked')
+		.populate({
+			path : 'blocked',
+			model: 'User',
+			select: 'firstName lastName username'
+		})
+}
+
+userSchema.methods.blockOtherUser = function(otherUserId) {
+	console.log(this);
+	return this.model('FriendRequest').unfriend(this._id, otherUserId)
+		.then(() => this.model('User').findById(this._id))
+		.then(blocker => {
+			blocker.blocked.push(otherUserId);
+			return blocker.save()
+		})
+		.then(() => this.model('User').findById(otherUserId))
+		.then(blocked => {
+			blocked.blockedBy.push(this._id)
+			return blocked.save()
+		})
+}
+
+userSchema.methods.unblockUser = function(otherUserId) {
+	return this.model('User').findById(otherUserId)
+		.then(user => {
+			let index = user.blockedBy.findIndex(id => id.toString() === this._id.toString())
+			if(index >= 0) user.blockedBy.splice(index, 1)
+			return user.save()
+		})
+		.then(() => {
+			let index = this.blocked.findIndex(id => id.toString() === otherUserId.toString())
+			if(index >= 0) this.blocked.splice(index, 1);
+			console.log(this.blocked)
+			return this.save()
+		})
+		.then(() => this.model('User').getBlockedList(this._id))
 }
 
 userSchema.statics.verifyPassword = function(candidatePW, hashedPW){

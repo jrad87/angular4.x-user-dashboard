@@ -5,7 +5,8 @@ const commentSchema = new Schema({
 	text: {
 		type: String,
 		required: [true, 'Comment text is required'],
-		trim: true
+		minlength: [1, 'Comment text is required'],
+		trim: false
 	},
 	commentOn: {
 		type: Schema.Types.ObjectId,
