@@ -6,20 +6,17 @@ module.exports = {
 	login(request, response){
 		User.findOne({username: request.body.username})
 			.then(user => {
-				if(!user){
-					throw new Error('Invalid credentials')
-				}
+				if(!user) throw new Error('Invalid credentials')
 				return User.verifyPassword(request.body.password, user.password)
-					.then(() => {
-						/*
-						if(user.isActive) throw new Error(
-							'Please sign out of your other devices and try to log in again'
-						);
-						*/
-						return user.activateStatus()
-							.then(result => login(request, response, user));
-					});
+					.then(() => user)		
 			})
+			.then(user => {
+				if(user.isActive) throw new Error(
+					'Please sign out of your other devices and try to log in again'
+				);
+				return user.activateStatus()
+			})
+			.then(user => login(request, response, user))
 			.catch(errorHandler.bind(response));
 	},
 	register(req, res){

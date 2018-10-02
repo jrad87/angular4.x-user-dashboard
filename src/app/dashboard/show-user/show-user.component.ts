@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { UserService } from 'services/user.service';
 import { AuthService } from 'services/auth.service';
+import { RealTimeService } from 'services/realtime.service'; 
 
 import { User } from 'classes/user';
 import { Message } from 'classes/message';
@@ -14,30 +15,53 @@ export class ShowUserComponent implements OnInit, OnDestroy {
 	user: User;
 	isFriend: boolean;
 	isSelf: boolean;
-	private _sub: any;
+
+	private _subscription;
 	constructor(
 		private _route: ActivatedRoute,
 		private _users: UserService,
-		private _auth: AuthService
+		private _auth: AuthService,
+		private _realtime: RealTimeService
 	) {}
+
+	updateChanges() {
+		this._realtime.changeOccurred();
+	}
 
 	showNewMessage(message) {
 		this.user.messages.push(message);
+		this.updateChanges()
 	}
 
 	removeDeletedMessage(m_id) {
 		this.user.messages.splice(this.user.messages.findIndex(message => {
 			return (message as Message)._id.toString() === m_id;
 		}), 1);
+		this.updateChanges();
+	}
+
+	private setIsFriend(user: User): void {
+		this.isFriend = ( 0 <= user.friends.findIndex(x => x === this._auth.userID()));
 	}
 
 	ngOnInit() {
 		this.user = new User();
 		this._route.data.subscribe((data: {user: User}) => {
 			this.user = data.user;
-			this.isFriend = ( 0 <= data.user.friends.findIndex(x => x === this._auth.userID()));
-			this.isSelf = (this.user._id === this._auth.userID())
-		})
+			this.setIsFriend(this.user);
+			this.isSelf = (this.user._id === this._auth.userID());
+		});
+
+		this._subscription = this._realtime.connection().subscribe(() => {
+			
+			this._users.show(this.user._id)
+				.then(user => {
+					this.user = user
+					this.setIsFriend(user);
+				})
+				.catch(console.log);
+		});
+
 		/*
 		Old code before prefetching user data with route resolver:
 		
@@ -57,6 +81,6 @@ export class ShowUserComponent implements OnInit, OnDestroy {
 		*/
 	}
 	ngOnDestroy() {
-		//this._sub.unsubscribe();
+		this._subscription.unsubscribe();
 	}
 }

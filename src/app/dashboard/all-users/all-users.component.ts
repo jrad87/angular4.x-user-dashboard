@@ -5,6 +5,7 @@ import { FriendRequest } from 'classes/friend-request';
 import { UserService } from 'services/user.service';
 import { AuthService } from 'services/auth.service';
 import { FriendService } from 'services/friend.service';
+import { RealTimeService } from 'services/realtime.service';
 
 @Component({
 	templateUrl: './all-users.component.html'
@@ -13,10 +14,12 @@ export class AllUsersComponent implements OnInit {
 	currentUser: User;
 	currentUsersFriends: User[] = [];
 	otherUsers: User[] = [];
+	private subscription;
 	constructor(
 		private _auth: AuthService,
 		private _users: UserService,
-		private _friends: FriendService
+		private _friends: FriendService,
+		private _realtime: RealTimeService
 	) {}
 	partitionUsers (users: User[]): void {
 		
@@ -64,26 +67,32 @@ export class AllUsersComponent implements OnInit {
 	blockUser(id: string) {
 		this._users.block(this._auth.userID(), id)
 			.then(users => this.partitionUsers(users))
-			.catch(console.log)
+			.then(() => this._realtime.changeOccurred())
+			.catch(console.log);
 	}
 	reportUser() {
 		console.log('User reported');
 	}
 	unfriendUser(unfriender, unfriendee) {
 		this._friends.unfriend(unfriender, unfriendee)
-			.then(users => this.partitionUsers(users));
+			.then(users => this.partitionUsers(users))
+			.then(() => this._realtime.changeOccurred())
+			.catch(console.log);
+			
 		console.log('User unfriended');
 	}
 	placeFriendRequest(requestee) {
 		this._friends.request((<User>this.currentUser)._id, requestee)
 			.then( () => this._users.index())
 			.then(users => this.partitionUsers(users))
+			.then(() => this._realtime.changeOccurred())
 			.catch(console.log);
 	}
 	acceptRequest(requestId) {
 		this._friends.acceptRequest(requestId)
 			.then( () => this._users.index())
 			.then(users => this.partitionUsers(users))
+			.then(() => this._realtime.changeOccurred())
 			.catch(console.log);
 	}
 	rejectRequest(requestId) {
@@ -94,6 +103,7 @@ export class AllUsersComponent implements OnInit {
 					return user._id.toString() === rejectedRequest.requester._id.toString();
 				})] = rejectedRequest.requester;
 			})
+			.then(() => this._realtime.changeOccurred())
 			.catch(console.log);
 	}
 	cancelRequest(requestId) {
@@ -104,6 +114,7 @@ export class AllUsersComponent implements OnInit {
 					return user._id.toString() === canceledRequest.requestee._id.toString();
 				})] = canceledRequest.requestee;
 			})
+			.then(() => this._realtime.changeOccurred())
 			.catch(console.log);
 	}
 	ngOnInit() {
@@ -111,5 +122,12 @@ export class AllUsersComponent implements OnInit {
 		this._users.index()
 			.then(users => this.partitionUsers(users))
 			.catch(console.log);
+		this.subscription = this._realtime.connection().subscribe(() => {
+			//console.log('in next');
+			return this._users.index().then(users => this.partitionUsers(users))
+		})
+	}
+	ngOnDestroy() {
+		this.subscription.unsubscribe()
 	}
 }

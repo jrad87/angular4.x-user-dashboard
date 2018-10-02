@@ -11,7 +11,8 @@ const friends = require('../controllers/friends');
 //pub.publish('chat', 'first message');
 
 module.exports = function(app){
-	app .post('/api/auth/login', auth.login)
+	app 
+		.post('/api/auth/login', auth.login)
 		.post('/api/auth/register', auth.register)
 		.delete('/api/auth/logout', auth.logout)
 		

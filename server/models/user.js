@@ -155,18 +155,47 @@ userSchema.statics.getBlockedList = function(id) {
 }
 
 userSchema.methods.blockOtherUser = function(otherUserId) {
-	console.log(this);
 	return this.model('FriendRequest').unfriend(this._id, otherUserId)
-		.then(() => this.model('User').findById(this._id))
-		.then(blocker => {
-			blocker.blocked.push(otherUserId);
-			return blocker.save()
+		.then(() => this.model('FriendRequest').findOneAndRemove({ 
+			requester: otherUserId, 
+			requestee: this._id
+		}))
+		.then(deletedRequest1 => {
+			return this.model('FriendRequest').findOneAndRemove({
+				requestee: otherUserId,
+				requester: this._id
+			}).then(deletedRequest2 => [deletedRequest1, deletedRequest2]);
+			// after deleting both request, send an array of the result down the chain
+			// the results will be null or an object
 		})
-		.then(() => this.model('User').findById(otherUserId))
-		.then(blocked => {
-			blocked.blockedBy.push(this._id)
-			return blocked.save()
+		.then(arr => arr.filter(x => x !== null).map(x => x._id))
+		.then(deletedRequests => {
+			return this.model('User').findById(this._id)
+				.then(blocker => {
+					let indices = deletedRequests.map(index => {
+						return blocker.friendRequests.findIndex(x => x.toString() === index.toString())
+					})
+					.filter(x => x > -1);
+					indices.forEach(index => {
+						blocker.friendRequests.splice(index, 1);
+					})
+					blocker.blocked.push(otherUserId);
+					return blocker.save()
+				})
+				.then(() => this.model('User').findById(otherUserId))
+				.then(blocked => {
+					let indices = deletedRequests.map(index => {
+						return blocked.friendRequests.findIndex(x => x.toString() === index.toString())
+					})
+					.filter(x => x > -1);
+					indices.forEach(index => {
+						blocked.friendRequests.splice(index, 1);
+					})
+					blocked.blockedBy.push(this._id)
+					return blocked.save()
+				})
 		})
+		
 }
 
 userSchema.methods.unblockUser = function(otherUserId) {
@@ -179,7 +208,6 @@ userSchema.methods.unblockUser = function(otherUserId) {
 		.then(() => {
 			let index = this.blocked.findIndex(id => id.toString() === otherUserId.toString())
 			if(index >= 0) this.blocked.splice(index, 1);
-			console.log(this.blocked)
 			return this.save()
 		})
 		.then(() => this.model('User').getBlockedList(this._id))

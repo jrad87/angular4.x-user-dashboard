@@ -57,7 +57,6 @@ export class PostCommentComponent implements OnInit, AfterViewInit {
 	) {}
 
 	postComment() {
-		console.log(this.commentBuffer)
 		this._comments.postComment(this.commentBuffer)
 			.then(newComment => {
 				this.commentPosted.emit(newComment);

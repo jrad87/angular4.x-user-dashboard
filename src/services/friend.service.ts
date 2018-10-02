@@ -12,7 +12,7 @@ export class FriendService {
 	) {}
 	
 	request(requesterId, requesteeId){
-		console.log(requesterId, requesteeId);
+		//console.log(requesterId, requesteeId);
 		return this._http.post(`/api/users/${requesteeId}/friend`, {requester: requesterId})
 			.map(data => data.json())
 			.toPromise();

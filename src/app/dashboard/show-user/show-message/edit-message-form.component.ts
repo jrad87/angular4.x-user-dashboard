@@ -10,16 +10,20 @@ import {
 } from '@angular/core'
 
 import { Message } from 'classes/message'
+import { MessageService } from 'services/message.service';
 
 @Component({
     selector: 'edit-message-form',
     template: `
         <div>
-            <form>
-                <textarea #editMessageInput>{{message.text}}</textarea>
-                <button type="button" (click)="cancelEdit()">Cancel</button>
-                <button type="button" (click)="saveEdit()">Save Edit</button>    
-            </form>
+            <ul *ngIf="errors">
+				<li *ngFor="let error of errors">{{error}}</li>
+			</ul>
+            <textarea #editMessageInput
+                [(ngModel)]="editMessageBuffer">
+            </textarea>
+            <button type="button" (click)="cancelEdit()">Cancel</button>
+            <button type="button" (click)="saveEdit()">Save Edit</button>
         </div>
     `, 
     styles: []
@@ -27,21 +31,36 @@ import { Message } from 'classes/message'
     @ViewChild('editMessageInput') 
     editMessageInput: ElementRef;
     @Input() message : Message;
-    @Output() editingEnded = new EventEmitter()
+    @Output() messageEdited = new EventEmitter();
+    @Output() editingCanceled = new EventEmitter()
+
+    errors: string[] = [];
+    editMessageBuffer: string = ''
+
+    constructor(
+        private _messages: MessageService
+    ) {}
+
     saveEdit() {
-        console.log('save edit')
-        this.editingEnded.emit()
+        this._messages.editMessage(this.message._id, this.editMessageBuffer)
+            .then(editedMessage => {        
+                this.messageEdited.emit(editedMessage);
+            })
+            .catch(errorResponse => this.displayErrors(errorResponse.json()))
     }
     cancelEdit() {
         console.log('cancel edit')
-        this.editingEnded.emit()
+        this.editingCanceled.emit()
     }
+
+    displayErrors(errors) {
+        this.errors = errors;
+    }
+
     ngOnInit() {
-        //console.log(this.message)
+        this.editMessageBuffer = this.message.text;
     }
-    ngAfterViewInit() {
-        console.log(this.editMessageInput.nativeElement)
-        
+    ngAfterViewInit() {        
         this.editMessageInput.nativeElement.focus()
     }
 }

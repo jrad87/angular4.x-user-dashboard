@@ -22,7 +22,8 @@
 	<div class="col-md-9 ml-auto">
 		<app-show-message
 			[message]="message"
-			(messageDeleted)="removeDeletedMessage($event)">
+			(messageDeleted)="removeDeletedMessage($event)"
+			(messageChanged)="updateChanges()">
 		</app-show-message>
 	</div>
 	<!--div class="col-md-3">

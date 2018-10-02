@@ -60,4 +60,11 @@ messageSchema.methods.populateMessage = function () {
 		}]);
 }
 
+messageSchema.methods.updateMessage = function(text) {
+	console.log(this);
+	this.text = text;
+	return this.save()
+		.then(message => message.populateMessage())
+}
+
 module.exports = mongoose.model('Message', messageSchema);

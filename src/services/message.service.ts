@@ -27,4 +27,9 @@ export class MessageService {
 			.map(data => data.json())
 			.toPromise();
 	}
+	editMessage(id: string, text: string) {
+		return this._http.put(`/api/messages/${id}`, {text: text})
+			.map(data => data.json())
+			.toPromise()
+	}
 }

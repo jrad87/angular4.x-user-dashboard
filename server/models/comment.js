@@ -39,7 +39,7 @@ commentSchema.statics.updateComment = function(id, text){
 	return this.model('Comment')
 		.findById(id)
 		.then(comment => {
-			console.log(comment);
+			//console.log(comment);
 			comment.text = text;
 			return comment.save()
 		})

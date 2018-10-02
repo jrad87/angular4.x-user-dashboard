@@ -5,7 +5,7 @@ let socketUserLookup = {};
 
 let timer;
 const LOG_TIMEOUT_QUEUE_INTERVAL = 5000
-const TIMEOUT_MILLIS = 30 * LOG_TIMEOUT_QUEUE_INTERVAL
+const TIMEOUT_MILLIS = 20 * LOG_TIMEOUT_QUEUE_INTERVAL
 
 
 function findSocket(userId) {

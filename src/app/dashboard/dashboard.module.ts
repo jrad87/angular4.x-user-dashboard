@@ -12,6 +12,7 @@ import { CommentService } from 'services/comment.service';
 import { ProfileService } from 'services/profile.service';
 import { FriendService } from 'services/friend.service';
 import { NotificationService } from 'services/notification.service';
+import { RealTimeService } from 'services/realtime.service';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 
@@ -25,10 +26,9 @@ import { EditMessageFormComponent } from './show-user/show-message/edit-message-
 import { ShowMessageComponent } from './show-user/show-message/show-message.component';
 import { PostCommentComponent } from './show-user/show-message/post-comment.component';
 import { ShowCommentComponent } from './show-user/show-message/show-comment.component';
+import { EditCommentComponent } from './show-user/show-message/edit-comment.component';
 import { MessageActionsComponent } from './show-user/show-message/message-actions.component';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
- 
-import { AutofocusDirective } from '../directives/autofocus.directive'
 
 @NgModule({
 	imports: [
@@ -48,8 +48,8 @@ import { AutofocusDirective } from '../directives/autofocus.directive'
 		ShowMessageComponent,
 		PostCommentComponent,
 		ShowCommentComponent,
+		EditCommentComponent,
 		MessageActionsComponent,
-		AutofocusDirective,
 		UserSettingsComponent
 	],
 	providers: [
@@ -61,7 +61,8 @@ import { AutofocusDirective } from '../directives/autofocus.directive'
 		FriendService,
 		NotificationService,
 		InnerAuthGuard,
-		UserBlockGuard
+		UserBlockGuard,
+		RealTimeService
 	]
 })
 export class DashboardModule {}

@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { Subscriber } from 'rxjs';
 import * as io from 'socket.io-client';
 
 @Injectable()
 export class NotificationService {
 
-	socket;
+	private socket;
+	private url = 'http://localhost:8000'
 
 	triggerTimeout() {
 		this.socket.emit('timeouts::triggerTimeout', null);
@@ -24,22 +26,16 @@ export class NotificationService {
 		this.socket.emit('timeouts::timeoutAll')
 	}
 
-	connection() {
-		const observable = new Observable( observer => {
-			this.socket = io('http://localhost:8000')
-			this.socket.on('timeouts::testProcess', () => {
-				console.log('This part works');
-			})
-
+	connection(inputData) {
+		return new Observable( o => {
+			this.socket = io(this.url)
 			this.socket.on('timeouts::timeoutOccurred', (data) => {
-				console.log(data)
-				observer.next(data)
+				o.next(data);
 			})
 
 			return () => {
 				this.socket.disconnect();
 			};
 		});
-		return observable;
 	}
 }

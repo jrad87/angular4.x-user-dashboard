@@ -1,8 +1,9 @@
 const timeoutHandlers = require('./socket-handlers/timeouts')
-
+const realtimeChangeHandlers = require('./socket-handlers/realtime-changes');
 module.exports = function(io) {
 	io.on('connection', (socket) => {
 		timeoutHandlers(socket, io);
+		realtimeChangeHandlers(socket, io);
 	})
 }
 

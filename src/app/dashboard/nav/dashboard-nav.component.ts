@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'services/auth.service';
 import { NotificationService } from 'services/notification.service';
+import { Subscription } from 'rxjs'
 
 @Component({
 	selector: 'app-dashboard-nav',
@@ -15,7 +16,7 @@ import { NotificationService } from 'services/notification.service';
 					</div>
 					<div class="col-md-2">
 						<button (click)="logout()">Logout</button>
-						<button (click)="testTimeout()">Test Timeout</button>
+						<!--button (click)="testTimeout()">Test Timeout</button-->
 						<button (click)="goToSettings()">Settings</button>
 					</div>
 				</div>
@@ -25,7 +26,7 @@ import { NotificationService } from 'services/notification.service';
 	styleUrls: ['./dashboard-nav.component.css']
 })
 export class DashboardNavComponent implements OnInit, OnDestroy {
-	connection;
+	private connection: Subscription;
 	currentUserID: string;
 	constructor(
 		private _auth: AuthService,
@@ -48,13 +49,12 @@ export class DashboardNavComponent implements OnInit, OnDestroy {
 	}
 
 	goToSettings() {
-		console.log('Navigating');
 		this._router.navigate(['/dashboard/settings']);
 	}
 
 	ngOnInit() {
 		this.currentUserID = this._auth.userID();
-		this.connection = this._notify.connection().subscribe( () => {
+		this.connection = this._notify.connection(this._auth.userID()).subscribe( () => {
 			this.logout();
 		});
 		this._notify.connectUser(this.currentUserID);

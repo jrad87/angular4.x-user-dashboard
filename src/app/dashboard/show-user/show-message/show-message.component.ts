@@ -26,7 +26,8 @@ import { AuthService } from 'services/auth.service';
 					<edit-message-form 
 						*ngIf="isEditing"
 						[message]="message"
-						(editingEnded)="toggleEditing()">						
+						(messageEdited)="saveEdit($event)"
+						(editingCanceled)="toggleEditing()">						
 					</edit-message-form>									
 					<div>
 						<app-show-comment
@@ -69,6 +70,7 @@ import { AuthService } from 'services/auth.service';
 export class ShowMessageComponent implements OnInit {
 	@Input() message: Message;
 	@Output() messageDeleted = new EventEmitter();
+	@Output() messageChanged = new EventEmitter();
 	isCommenting = false;
 	isEditing = false;
 
@@ -85,9 +87,14 @@ export class ShowMessageComponent implements OnInit {
 			.catch(console.log);
 	}
 
+	saveEdit(newMessage) {
+		this.toggleEditing();
+		this.updateMessage(newMessage);
+	}
+
 	updateMessage(newMessage) {
-		console.log(newMessage)
 		this.message = newMessage;
+		this.messageChanged.emit();
 	}
 
 	addComment(id: string): void {
@@ -95,6 +102,7 @@ export class ShowMessageComponent implements OnInit {
 			.then(message => {
 				this.message = message;
 				this.toggleCommenting();
+				this.messageChanged.emit();
 			})
 			.catch(console.log);
 	}
@@ -103,7 +111,6 @@ export class ShowMessageComponent implements OnInit {
 		this.isCommenting = !this.isCommenting; 
 	}
 	toggleEditing() { 
-		console.log('Toggling editing');
 		this.isEditing = !this.isEditing; 
 	}
 

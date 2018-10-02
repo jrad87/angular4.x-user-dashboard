@@ -1,4 +1,13 @@
-import { Component,	OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { 
+	Component,	
+	OnInit, 
+	Input, 
+	Output, 
+	EventEmitter,
+	ViewChild,
+	AfterViewChecked,
+	ElementRef
+} from '@angular/core';
 import { Comment } from 'classes/comment';
 import { User } from 'classes/user';
 import { AuthService } from 'services/auth.service';
@@ -8,31 +17,25 @@ import { CommentService } from 'services/comment.service';
 	selector: 'app-show-comment',
 	template: `
 	<div class="comment-container"
-			*ngIf="!isEditing">
-			<h2>{{comment.commentFrom.username}} said ...</h2>
-			<p>{{comment.text}}</p>
-			<button
-				*ngIf="hasEditPrivileges"
-				(click)="toggleEditing()"
-			>Edit</button>
-			<button
-				*ngIf="hasDeletePrivileges"
-				(click)="deleteComment()"
-			>Delete</button>
-		</div>
-		<div class="comment-container"
-			*ngIf="isEditing"
-		>
-			<ul *ngIf="errors">
-				<li *ngFor="let error of errors">{{error}}</li>
-			</ul>
-			<textarea
-				placeholder="{{comment.text}}"
-				[(ngModel)]="editCommentBuffer"
-			></textarea>
-			<button (click)="toggleEditing()">Cancel</button>
-			<button (click)="editComment()">Save</button>
-		</div>
+		
+		*ngIf="!isEditing">
+		<h2>{{comment.commentFrom.username}} said ...</h2>
+		<p>{{comment.text}}</p>
+		<button
+			*ngIf="hasEditPrivileges"
+			(click)="toggleEditing()"
+		>Edit</button>
+		<button
+			*ngIf="hasDeletePrivileges"
+			(click)="deleteComment()"
+		>Delete</button>
+	</div>
+	<app-edit-comment
+		*ngIf="isEditing"
+		[comment]="comment"
+		(cancelEdit)="toggleEditing()"
+		(successfulEdit)="editComment($event)">
+	</app-edit-comment>
 	`,
 	styles: [`
 		h2 {
@@ -46,7 +49,11 @@ import { CommentService } from 'services/comment.service';
 		}
 	`]
 })
-export class ShowCommentComponent implements OnInit {
+export class ShowCommentComponent implements OnInit, AfterViewChecked {
+	
+	@ViewChild('editCommentContainer')
+	editCommentContainer: ElementRef;
+	
 	@Input() comment: Comment = new Comment();
 	@Input() messageTo: string;
 	@Output() messageChanged = new EventEmitter();
@@ -64,6 +71,8 @@ export class ShowCommentComponent implements OnInit {
 
 	toggleEditing() {
 		this.isEditing = !this.isEditing;
+		this.isEditing ? this.editCommentBuffer = this.comment.text : ''
+		//if(this.isEditing) console.log(this.editCommentContainer.nativeElement);
 	}
 
 	deleteComment() {
@@ -74,13 +83,8 @@ export class ShowCommentComponent implements OnInit {
 			.catch(console.log);
 	}
 
-	editComment() {
-		// console.log(this.editCommentBuffer);
-		this._comments.editComment(this.comment, this.editCommentBuffer)
-			.then(updatedMessage => {
-				this.messageChanged.emit(updatedMessage);
-			})
-			.catch(errorResponse => this.displayErrors(errorResponse.json()));
+	editComment(updatedMessage) {
+		this.messageChanged.emit(updatedMessage);
 	}
 
 	constructor(
@@ -89,7 +93,6 @@ export class ShowCommentComponent implements OnInit {
 	) {}
 
 	ngOnInit() {
-		console.log()
 		if (this._auth.userID() === (this.comment.commentFrom as User)._id.toString()) {
 			this.hasDeletePrivileges = true;
 			this.hasEditPrivileges = true;
@@ -98,5 +101,14 @@ export class ShowCommentComponent implements OnInit {
 			this.hasDeletePrivileges = true;
 			this.hasEditPrivileges = false;
 		}
+	}
+	ngOnChanges() {
+		console.log(this.editCommentContainer);
+	}
+	ngAfterViewChecked() {
+		//console.log(this.editCommentContainer);
+	}
+	ngAfterViewInit() {
+		//this.editCommentInput.nativeElement.focus();
 	}
 }

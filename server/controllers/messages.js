@@ -34,7 +34,10 @@ module.exports = {
 			.catch(console.log)
 	},
 	updateMessage(request, response){
-			
+		Message.findById(request.params.id)
+			.then(message => message.updateMessage(request.body.text))
+			.then(updatedMessage => response.json(updatedMessage))
+			.catch(errorHandler.bind(response));
 	},
 	addComment(request, response){
 		Message.findById(request.params.id)
